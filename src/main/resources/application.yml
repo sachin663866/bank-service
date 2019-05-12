@@ -1,0 +1,30 @@
+#server:
+#  port: ${server_port:8085}
+#
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://eureka-server:8761/eureka/
+#
+#spring:
+#  application:
+#    name: bank-service
+
+
+#eureka:
+#  instance:
+#    leaseRenewalIntervalInSeconds: 1
+#    leaseExpirationDurationInSeconds: 2
+#  client:
+#    serviceUrl:
+#      defaultZone: ${eureka_url:http://eureka-server:8761/eureka/}
+#    healthcheck:
+#      enabled: true
+#    lease:
+#      duration: 5
+
+#
+#kafka:
+#  bootstrap-servers: localhost:9092
+#  topic: test
+
