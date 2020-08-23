@@ -14,7 +14,7 @@
     stage('Build and Generate Docker Images') {
       steps {
         sh 'mvn -B -DskipTests clean package'
-        sh 'docker build -f Dockerfile -t spring-jpa .'
+        sh 'docker build -f bank-service -t spring-jpa .'
         sh 'echo $USER'
         sh 'echo whoami'
       }
