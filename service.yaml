@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-labels:
-  name: bank-service 
-    name: bank-service   
+  labels:
+    name: bank-service 
+  name: bank-service   
 spec:
   ports:
     - name: http
