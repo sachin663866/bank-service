@@ -1,8 +1,8 @@
-pipeline {
+  pipeline{
   agent any
-  tools { 
+  tools {
+        maven 'MAVEN_HOME'
         jdk 'JAVA_HOME'
-        maven 'Maven'
   }
   stages {
     stage('Clone repository') {
@@ -11,20 +11,33 @@ pipeline {
         checkout scm
       }
     }
-    stage('Build') {
+    stage('Build and Generate Docker Images') {
       steps {
-        sh 'mvn clean install'
+        sh 'mvn -B -DskipTests clean package'
+        sh 'echo $USER'
+        sh 'echo whoami'
       }
     }
-    stage('Docker Build') {
-      steps {
-        sh '/usr/bin/docker build -t bank-service .'
-      }
+    stage('Push images to aws ecr'){
+          steps {
+            withDockerRegistry(credentialsId: 'ecr:us-east-1:aws-cred', url: 'http://656953382254.dkr.ecr.us-east-1.amazonaws.com/bank-service') {
+             sh 'docker tag bank-service:latest 656953382254.dkr.ecr.us-east-1.amazonaws.com/bank-service'
+             sh 'docker push 656953382254.dkr.ecr.us-east-1.amazonaws.com/bank-service'
+            }
+          }
     }
-  stage('Docker Run') {
-      steps {
-         sh 'nohup /usr/bin/docker run -t --name bank-container -p 8458:8458 bank-service &'
-      }
-    } 
+        stage('Run docker images on kubernetes cluster') {
+          steps {
+            node('eks-master-node'){    
+              checkout scm
+             sh 'git checkout master'
+             sh 'export KUBECONFIG=~/.kube/config'
+             sh 'aws eks --region us-east-1 update-kubeconfig --name terraform-eks-demo'
+             sh 'kubectl apply -f deployment.yaml'
+             sh 'kubectl apply -f service.yaml'
+            }
+          }
+        }
+    
   }
 }
