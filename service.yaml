@@ -7,7 +7,6 @@ metadata:
 spec:
   ports:
     - name: http
-      protocol: TCP
     - port: 8458
   selector:
     app: bank-service
